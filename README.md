@@ -1,0 +1,1202 @@
+# Weather API
+
+In this challenge, you are part of a team building a travel company platform. One requirement is for a REST API service to provide weather information using the Spring Boot framework. You will need to add functionality to add and delete information as well as to perform some queries. You'll be dealing with typical information for weather data like latitude, longitude, temperature, etc. The team has come up with a set of requirements including filtering and ordering requirements, response codes and error messages for the queries you must implement.
+
+The definitions and a detailed requirements list follow. You will be graded on whether your application performs data retrieval and manipulation based on given use cases exactly as described in the requirements.
+
+Each weather data is a JSON entry with the following keys:
+
+* id: This is the unique weather data ID.
+* date: This is the weather data record date given in the format yyysoly-MM-dd.
+* location: The place for which the weather data was recorded. The location itself is a JSON    object consisting of the following fields:
+  * lat: The latitude (upto four decimal places) of the location.
+  * lon: The longitude (upto four decimal places) of the location.
+  * city: This is the city name.
+  * state: This is the state name.
+* temperature: This is an array of 24 float values (upto one decimal place), describing the hourly temperature (in F) for the given location.
+
+## Sample JSON weather data object
+
+```
+{
+   "id":1,
+   "date":"1985-01-01",
+   "location":{
+      "lat":36.1189,
+      "lon":-86.6892,
+      "city":"Nashville",
+      "state":"Tennessee"
+   },
+   "temperature":[
+      37.3,
+      36.8,
+      36.4,
+      36.0,
+      35.6,
+      35.3,
+      35.0,
+      34.9,
+      35.8,
+      38.0,
+      40.2,
+      42.3,
+      43.8,
+      44.9,
+      45.5,
+      45.7,
+      44.9,
+      43.0,
+      41.7,
+      40.8,
+      39.9,
+      39.2,
+      38.6,
+      38.1
+   ]
+}
+```
+
+The REST service should implement the following functionalities:
+
+1. Erasing all the weather data: The service should be able to erase all the weather data by the DELETE request at /erase. The HTTP response code should be 200.
+
+2. Erasing all the weather data by the date range inclusive and the location coordinates: The service should be able to erase all the weather data by the date range inclusive and the location coordinates by the DELETE request at /erase?start={startDate}&end={endDate}&lat={latitude}&lon={longitude}. The HTTP response code should be 200.
+
+3. Adding new weather data: The service should be able to add a new weather data by the POST request at /weather. The weather JSON is sent in the request body. If weather data with the same ID already exists then the HTTP response code should be 400; otherwise, the response code should be 201.
+
+4. Returning all the weather data: The service should be able to return the JSON array of all the weather data by the GET request at /weather. The HTTP response code should be 200. The JSON array should be sorted in ascending order of weather data ID.
+
+5. Returning the weather data filtered by the date: The service should be able to return the JSON array of all the weather data recorded on the given date by the GET request at /weather?date={date}. If the requested location does not exist then HTTP response code should be 404; otherwise, the response code should be 200. The JSON array should be sorted in ascending order of weather data ID.
+
+6. Returning the weather data filtered by the location coordinates: The service should be able to return the JSON array of all the weather data which are associated with the given latitude and longitude by the GET request at /weather?lat={latitude}&lon={longitude}. If the requested location does not exist then HTTP response code should be 404; otherwise, the response code should be 200. The JSON array should be sorted in ascending order of weather data ID.
+
+You should complete the given incomplete project so that it passes all the test cases when running the provided JUnit tests. The project by default supports the use of H2 database, but you can make use of any database to store the weather data by specifying the dependency in the pom.xml file.
+
+## Sample Series of Requests
+
+Requests are received in the following order and are provided in the test file http00.json:
+
+__POST /weather__
+
+Consider the following POST requests (these are performed in the ascending order of weather id):
+
+1.
+```
+{
+   "id":1,
+   "date":"1985-01-01",
+   "location":{
+      "lat":36.1189,
+      "lon":-86.6892,
+      "city":"Nashville",
+      "state":"Tennessee"
+   },
+   "temperature":[
+      37.3,
+      36.8,
+      36.4,
+      36.0,
+      35.6,
+      35.3,
+      35.0,
+      34.9,
+      35.8,
+      38.0,
+      40.2,
+      42.3,
+      43.8,
+      44.9,
+      45.5,
+      45.7,
+      44.9,
+      43.0,
+      41.7,
+      40.8,
+      39.9,
+      39.2,
+      38.6,
+      38.1
+   ]
+}
+```
+2.
+```
+{
+   "id":2,
+   "date":"1985-01-02",
+   "location":{
+      "lat":36.1189,
+      "lon":-86.6892,
+      "city":"Nashville",
+      "state":"Tennessee"
+   },
+   "temperature":[
+      37.5,
+      37.0,
+      36.6,
+      36.2,
+      35.9,
+      35.5,
+      35.3,
+      35.2,
+      36.1,
+      38.3,
+      40.6,
+      42.7,
+      44.2,
+      45.3,
+      46.0,
+      46.1,
+      45.3,
+      43.3,
+      42.0,
+      41.2,
+      40.3,
+      39.6,
+      39.0,
+      38.4
+   ]
+}
+```
+3.
+
+```
+{
+   "id":3,
+   "date":"1985-01-03",
+   "location":{
+      "lat":36.1189,
+      "lon":-86.6892,
+      "city":"Nashville",
+      "state":"Tennessee"
+   },
+   "temperature":[
+      37.9,
+      37.4,
+      37.0,
+      36.6,
+      36.3,
+      35.9,
+      35.6,
+      35.4,
+      36.3,
+      38.4,
+      40.7,
+      42.7,
+      44.2,
+      45.3,
+      46.0,
+      46.1,
+      45.3,
+      43.3,
+      42.0,
+      41.1,
+      40.2,
+      39.4,
+      38.8,
+      38.2
+   ]
+}
+```
+
+4.
+```
+{
+   "id":4,
+   "date":"1985-01-04",
+   "location":{
+      "lat":36.1189,
+      "lon":-86.6892,
+      "city":"Nashville",
+      "state":"Tennessee"
+   },
+   "temperature":[
+      37.7,
+      37.1,
+      36.7,
+      36.3,
+      36.0,
+      35.6,
+      35.2,
+      35.1,
+      35.9,
+      38.1,
+      40.3,
+      42.4,
+      43.8,
+      44.9,
+      45.6,
+      45.7,
+      44.9,
+      43.0,
+      41.7,
+      40.7,
+      39.8,
+      39.1,
+      38.4,
+      37.9
+   ]
+}
+```
+
+5.
+```
+{
+   "id":5,
+   "date":"1985-01-01",
+   "location":{
+      "lat":32.5156,
+      "lon":-92.0406,
+      "city":"Monroe",
+      "state":"Louisiana"
+   },
+   "temperature":[
+      42.2,
+      42.2,
+      41.7,
+      41.1,
+      40.5,
+      40.4,
+      40.2,
+      39.8,
+      40.7,
+      43.6,
+      46.3,
+      48.8,
+      50.5,
+      52.0,
+      53.1,
+      53.5,
+      53.2,
+      51.3,
+      48.7,
+      46.9,
+      45.9,
+      44.7,
+      44.3,
+      43.7
+   ]
+}
+```
+6.
+```
+{
+   "id":6,
+   "date":"1985-01-02",
+   "location":{
+      "lat":32.5156,
+      "lon":-92.0406,
+      "city":"Monroe",
+      "state":"Louisiana"
+   },
+   "temperature":[
+      42.5,
+      42.5,
+      42.0,
+      41.4,
+      40.9,
+      40.8,
+      40.3,
+      40.0,
+      40.9,
+      43.9,
+      46.6,
+      49.2,
+      51.0,
+      52.5,
+      53.6,
+      54.0,
+      53.6,
+      51.8,
+      49.2,
+      47.4,
+      46.5,
+      45.4,
+      44.9,
+      44.4
+   ]
+}
+```
+
+7.
+```
+{
+   "id":7,
+   "date":"1985-01-03",
+   "location":{
+      "lat":32.5156,
+      "lon":-92.0406,
+      "city":"Monroe",
+      "state":"Louisiana"
+   },
+   "temperature":[
+      43.2,
+      43.2,
+      42.6,
+      42.0,
+      41.4,
+      41.3,
+      40.7,
+      40.3,
+      41.2,
+      44.2,
+      46.9,
+      49.4,
+      51.1,
+      52.5,
+      53.6,
+      54.1,
+      53.7,
+      51.8,
+      49.2,
+      47.3,
+      46.4,
+      45.4,
+      44.8,
+      44.5
+   ]
+}
+```
+
+8.
+```
+{
+   "id":8,
+   "date":"1985-01-04",
+   "location":{
+      "lat":32.5156,
+      "lon":-92.0406,
+      "city":"Monroe",
+      "state":"Louisiana"
+   },
+   "temperature":[
+      43.1,
+      43.1,
+      42.5,
+      41.8,
+      41.3,
+      41.2,
+      40.4,
+      40.0,
+      40.9,
+      43.9,
+      46.6,
+      49.1,
+      50.8,
+      52.3,
+      53.4,
+      54.0,
+      53.6,
+      51.7,
+      49.2,
+      47.2,
+      46.3,
+      45.3,
+      44.7,
+      44.3
+   ]
+}
+```
+
+9.
+```
+{
+   "id":9,
+   "date":"1985-01-01",
+   "location":{
+      "lat":32.5,
+      "lon":-93.6667,
+      "city":"Shreveport",
+      "state":"Louisiana"
+   },
+   "temperature":[
+      53.6,
+      53.6,
+      53.6,
+      53.6,
+      53.6,
+      53.6,
+      39.4,
+      39.4,
+      40.1,
+      42.9,
+      45.8,
+      48.5,
+      50.3,
+      52.0,
+      53.2,
+      53.6,
+      53.4,
+      51.6,
+      48.8,
+      46.8,
+      45.5,
+      44.5,
+      53.6,
+      53.6
+   ]
+}
+```
+
+10.
+```
+{
+   "id":10,
+   "date":"1985-01-02",
+   "location":{
+      "lat":32.5,
+      "lon":-93.6667,
+      "city":"Shreveport",
+      "state":"Louisiana"
+   },
+   "temperature":[
+      53.9,
+      53.9,
+      53.9,
+      53.9,
+      53.9,
+      53.9,
+      39.5,
+      39.5,
+      40.2,
+      43.1,
+      45.9,
+      48.6,
+      50.5,
+      52.1,
+      53.4,
+      53.9,
+      53.7,
+      52.0,
+      49.1,
+      47.0,
+      45.8,
+      44.8,
+      44.2,
+      43.4
+   ]
+}
+```
+
+11.
+```
+{
+   "id":11,
+   "date":"1985-01-03",
+   "location":{
+      "lat":32.5,
+      "lon":-93.6667,
+      "city":"Shreveport",
+      "state":"Louisiana"
+   },
+   "temperature":[
+      42.6,
+      54.0,
+      54.0,
+      54.0,
+      54.0,
+      54.0,
+      39.6,
+      39.6,
+      40.3,
+      43.2,
+      46.0,
+      48.7,
+      50.5,
+      52.2,
+      53.4,
+      54.0,
+      53.8,
+      52.0,
+      49.1,
+      47.0,
+      45.7,
+      44.7,
+      44.1,
+      43.1
+   ]
+}
+```
+
+12.
+```
+{
+   "id":12,
+   "date":"1985-01-04",
+   "location":{
+      "lat":32.5,
+      "lon":-93.6667,
+      "city":"Shreveport",
+      "state":"Louisiana"
+   },
+   "temperature":[
+      42.3,
+      54.1,
+      54.1,
+      54.1,
+      54.1,
+      40.1,
+      40.1,
+      39.4,
+      40.1,
+      43.1,
+      45.8,
+      48.6,
+      50.5,
+      52.1,
+      53.4,
+      54.1,
+      54.0,
+      52.2,
+      49.2,
+      47.1,
+      45.7,
+      44.7,
+      44.1,
+      43.2
+   ]
+}
+```
+
+__GET /weather?date=1985-01-01__
+
+The response of the GET request is the following JSON array with the HTTP response code 200:
+
+```
+[
+   {
+      "id":1,
+      "date":"1985-01-01",
+      "location":{
+         "lat":36.1189,
+         "lon":-86.6892,
+         "city":"Nashville",
+         "state":"Tennessee"
+      },
+      "temperature":[
+         37.3,
+         36.8,
+         36.4,
+         36.0,
+         35.6,
+         35.3,
+         35.0,
+         34.9,
+         35.8,
+         38.0,
+         40.2,
+         42.3,
+         43.8,
+         44.9,
+         45.5,
+         45.7,
+         44.9,
+         43.0,
+         41.7,
+         40.8,
+         39.9,
+         39.2,
+         38.6,
+         38.1
+      ]
+   },
+   {
+      "id":5,
+      "date":"1985-01-01",
+      "location":{
+         "lat":32.5156,
+         "lon":-92.0406,
+         "city":"Monroe",
+         "state":"Louisiana"
+      },
+      "temperature":[
+         42.2,
+         42.2,
+         41.7,
+         41.1,
+         40.5,
+         40.4,
+         40.2,
+         39.8,
+         40.7,
+         43.6,
+         46.3,
+         48.8,
+         50.5,
+         52.0,
+         53.1,
+         53.5,
+         53.2,
+         51.3,
+         48.7,
+         46.9,
+         45.9,
+         44.7,
+         44.3,
+         43.7
+      ]
+   },
+   {
+      "id":9,
+      "date":"1985-01-01",
+      "location":{
+         "lat":32.5,
+         "lon":-93.6667,
+         "city":"Shreveport",
+         "state":"Louisiana"
+      },
+      "temperature":[
+         53.6,
+         53.6,
+         53.6,
+         53.6,
+         53.6,
+         53.6,
+         39.4,
+         39.4,
+         40.1,
+         42.9,
+         45.8,
+         48.5,
+         50.3,
+         52.0,
+         53.2,
+         53.6,
+         53.4,
+         51.6,
+         48.8,
+         46.8,
+         45.5,
+         44.5,
+         53.6,
+         53.6
+      ]
+   }
+]
+```
+
+__GET /weather?lat=36.1189&lon=-86.6892__
+
+The response of the GET request is the following JSON array with the HTTP response code 200:
+
+```
+[
+   {
+      "id":1,
+      "date":"1985-01-01",
+      "location":{
+         "lat":36.1189,
+         "lon":-86.6892,
+         "city":"Nashville",
+         "state":"Tennessee"
+      },
+      "temperature":[
+         37.3,
+         36.8,
+         36.4,
+         36.0,
+         35.6,
+         35.3,
+         35.0,
+         34.9,
+         35.8,
+         38.0,
+         40.2,
+         42.3,
+         43.8,
+         44.9,
+         45.5,
+         45.7,
+         44.9,
+         43.0,
+         41.7,
+         40.8,
+         39.9,
+         39.2,
+         38.6,
+         38.1
+      ]
+   },
+   {
+      "id":2,
+      "date":"1985-01-02",
+      "location":{
+         "lat":36.1189,
+         "lon":-86.6892,
+         "city":"Nashville",
+         "state":"Tennessee"
+      },
+      "temperature":[
+         37.5,
+         37.0,
+         36.6,
+         36.2,
+         35.9,
+         35.5,
+         35.3,
+         35.2,
+         36.1,
+         38.3,
+         40.6,
+         42.7,
+         44.2,
+         45.3,
+         46.0,
+         46.1,
+         45.3,
+         43.3,
+         42.0,
+         41.2,
+         40.3,
+         39.6,
+         39.0,
+         38.4
+      ]
+   },
+   {
+      "id":3,
+      "date":"1985-01-03",
+      "location":{
+         "lat":36.1189,
+         "lon":-86.6892,
+         "city":"Nashville",
+         "state":"Tennessee"
+      },
+      "temperature":[
+         37.9,
+         37.4,
+         37.0,
+         36.6,
+         36.3,
+         35.9,
+         35.6,
+         35.4,
+         36.3,
+         38.4,
+         40.7,
+         42.7,
+         44.2,
+         45.3,
+         46.0,
+         46.1,
+         45.3,
+         43.3,
+         42.0,
+         41.1,
+         40.2,
+         39.4,
+         38.8,
+         38.2
+      ]
+   },
+   {
+      "id":4,
+      "date":"1985-01-04",
+      "location":{
+         "lat":36.1189,
+         "lon":-86.6892,
+         "city":"Nashville",
+         "state":"Tennessee"
+      },
+      "temperature":[
+         37.7,
+         37.1,
+         36.7,
+         36.3,
+         36.0,
+         35.6,
+         35.2,
+         35.1,
+         35.9,
+         38.1,
+         40.3,
+         42.4,
+         43.8,
+         44.9,
+         45.6,
+         45.7,
+         44.9,
+         43.0,
+         41.7,
+         40.7,
+         39.8,
+         39.1,
+         38.4,
+         37.9
+      ]
+   }
+]
+```
+
+__DELETE /erase?start=1985-01-02&end=1985-01-03&lat=36.1189&lon=-86.6892__
+
+The weather data with ID 2 and 3 are erased from the database with HTTP response code 200.
+
+__GET /weather__
+
+The response of the GET request is the following JSON array with the HTTP response code 200:
+
+```
+[
+   {
+      "id":1,
+      "date":"1985-01-01",
+      "location":{
+         "lat":36.1189,
+         "lon":-86.6892,
+         "city":"Nashville",
+         "state":"Tennessee"
+      },
+      "temperature":[
+         37.3,
+         36.8,
+         36.4,
+         36.0,
+         35.6,
+         35.3,
+         35.0,
+         34.9,
+         35.8,
+         38.0,
+         40.2,
+         42.3,
+         43.8,
+         44.9,
+         45.5,
+         45.7,
+         44.9,
+         43.0,
+         41.7,
+         40.8,
+         39.9,
+         39.2,
+         38.6,
+         38.1
+      ]
+   },
+   {
+      "id":4,
+      "date":"1985-01-04",
+      "location":{
+         "lat":36.1189,
+         "lon":-86.6892,
+         "city":"Nashville",
+         "state":"Tennessee"
+      },
+      "temperature":[
+         37.7,
+         37.1,
+         36.7,
+         36.3,
+         36.0,
+         35.6,
+         35.2,
+         35.1,
+         35.9,
+         38.1,
+         40.3,
+         42.4,
+         43.8,
+         44.9,
+         45.6,
+         45.7,
+         44.9,
+         43.0,
+         41.7,
+         40.7,
+         39.8,
+         39.1,
+         38.4,
+         37.9
+      ]
+   },
+   {
+      "id":5,
+      "date":"1985-01-01",
+      "location":{
+         "lat":32.5156,
+         "lon":-92.0406,
+         "city":"Monroe",
+         "state":"Louisiana"
+      },
+      "temperature":[
+         42.2,
+         42.2,
+         41.7,
+         41.1,
+         40.5,
+         40.4,
+         40.2,
+         39.8,
+         40.7,
+         43.6,
+         46.3,
+         48.8,
+         50.5,
+         52.0,
+         53.1,
+         53.5,
+         53.2,
+         51.3,
+         48.7,
+         46.9,
+         45.9,
+         44.7,
+         44.3,
+         43.7
+      ]
+   },
+   {
+      "id":6,
+      "date":"1985-01-02",
+      "location":{
+         "lat":32.5156,
+         "lon":-92.0406,
+         "city":"Monroe",
+         "state":"Louisiana"
+      },
+      "temperature":[
+         42.5,
+         42.5,
+         42.0,
+         41.4,
+         40.9,
+         40.8,
+         40.3,
+         40.0,
+         40.9,
+         43.9,
+         46.6,
+         49.2,
+         51.0,
+         52.5,
+         53.6,
+         54.0,
+         53.6,
+         51.8,
+         49.2,
+         47.4,
+         46.5,
+         45.4,
+         44.9,
+         44.4
+      ]
+   },
+   {
+      "id":7,
+      "date":"1985-01-03",
+      "location":{
+         "lat":32.5156,
+         "lon":-92.0406,
+         "city":"Monroe",
+         "state":"Louisiana"
+      },
+      "temperature":[
+         43.2,
+         43.2,
+         42.6,
+         42.0,
+         41.4,
+         41.3,
+         40.7,
+         40.3,
+         41.2,
+         44.2,
+         46.9,
+         49.4,
+         51.1,
+         52.5,
+         53.6,
+         54.1,
+         53.7,
+         51.8,
+         49.2,
+         47.3,
+         46.4,
+         45.4,
+         44.8,
+         44.5
+      ]
+   },
+   {
+      "id":8,
+      "date":"1985-01-04",
+      "location":{
+         "lat":32.5156,
+         "lon":-92.0406,
+         "city":"Monroe",
+         "state":"Louisiana"
+      },
+      "temperature":[
+         43.1,
+         43.1,
+         42.5,
+         41.8,
+         41.3,
+         41.2,
+         40.4,
+         40.0,
+         40.9,
+         43.9,
+         46.6,
+         49.1,
+         50.8,
+         52.3,
+         53.4,
+         54.0,
+         53.6,
+         51.7,
+         49.2,
+         47.2,
+         46.3,
+         45.3,
+         44.7,
+         44.3
+      ]
+   },
+   {
+      "id":9,
+      "date":"1985-01-01",
+      "location":{
+         "lat":32.5,
+         "lon":-93.6667,
+         "city":"Shreveport",
+         "state":"Louisiana"
+      },
+      "temperature":[
+         53.6,
+         53.6,
+         53.6,
+         53.6,
+         53.6,
+         53.6,
+         39.4,
+         39.4,
+         40.1,
+         42.9,
+         45.8,
+         48.5,
+         50.3,
+         52.0,
+         53.2,
+         53.6,
+         53.4,
+         51.6,
+         48.8,
+         46.8,
+         45.5,
+         44.5,
+         53.6,
+         53.6
+      ]
+   },
+   {
+      "id":10,
+      "date":"1985-01-02",
+      "location":{
+         "lat":32.5,
+         "lon":-93.6667,
+         "city":"Shreveport",
+         "state":"Louisiana"
+      },
+      "temperature":[
+         53.9,
+         53.9,
+         53.9,
+         53.9,
+         53.9,
+         53.9,
+         39.5,
+         39.5,
+         40.2,
+         43.1,
+         45.9,
+         48.6,
+         50.5,
+         52.1,
+         53.4,
+         53.9,
+         53.7,
+         52.0,
+         49.1,
+         47.0,
+         45.8,
+         44.8,
+         44.2,
+         43.4
+      ]
+   },
+   {
+      "id":11,
+      "date":"1985-01-03",
+      "location":{
+         "lat":32.5,
+         "lon":-93.6667,
+         "city":"Shreveport",
+         "state":"Louisiana"
+      },
+      "temperature":[
+         42.6,
+         54.0,
+         54.0,
+         54.0,
+         54.0,
+         54.0,
+         39.6,
+         39.6,
+         40.3,
+         43.2,
+         46.0,
+         48.7,
+         50.5,
+         52.2,
+         53.4,
+         54.0,
+         53.8,
+         52.0,
+         49.1,
+         47.0,
+         45.7,
+         44.7,
+         44.1,
+         43.1
+      ]
+   },
+   {
+      "id":12,
+      "date":"1985-01-04",
+      "location":{
+         "lat":32.5,
+         "lon":-93.6667,
+         "city":"Shreveport",
+         "state":"Louisiana"
+      },
+      "temperature":[
+         42.3,
+         54.1,
+         54.1,
+         54.1,
+         54.1,
+         40.1,
+         40.1,
+         39.4,
+         40.1,
+         43.1,
+         45.8,
+         48.6,
+         50.5,
+         52.1,
+         53.4,
+         54.1,
+         54.0,
+         52.2,
+         49.2,
+         47.1,
+         45.7,
+         44.7,
+         44.1,
+         43.2
+      ]
+   }
+]
+```

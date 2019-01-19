@@ -1,0 +1,14 @@
+version: 1.0
+configuration:
+  has_webserver: true
+  scoring:
+    command: cd /home/ubuntu/fullstack/project/WeatherApi; mvn clean test -Dtest=HttpJsonDynamicUnitTest > /dev/null 2>&1; cat target/customReports/result.xml
+  ide_config:
+    default_open_files:
+      - "WeatherApi/src/main/java/com/hackerrank/weather/model/Weather.java"
+      - "WeatherApi/src/main/java/com/hackerrank/weather/controller/WeatherApiRestController.java"
+      - "WeatherApi/src/test/resources/testcases/http00.json"
+    project_menu:
+      run: cd /home/ubuntu/fullstack/project/WeatherApi; mvn clean spring-boot:run
+      install: cd /home/ubuntu/fullstack/project/WeatherApi; mvn clean install
+      test: cd /home/ubuntu/fullstack/project/WeatherApi; mvn clean spring-boot:run

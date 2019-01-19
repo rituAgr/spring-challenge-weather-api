@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hackerrank.weather.HttpJsonDynamicUnitTest" time="1.929000" tests="6" errors="0" skipped="0" failures="6">
+    <testcase name="Sample Test" classname="com.hackerrank.weather.HttpJsonDynamicUnitTest" time="1.790000">
+        <failure>
+            Response Json array size does not match with the expected array size
+        </failure>
+    </testcase>
+    <testcase name="Additional Test 1" classname="com.hackerrank.weather.HttpJsonDynamicUnitTest" time="0.015000">
+        <failure>
+            Status code
+        </failure>
+    </testcase>
+    <testcase name="Additional Test 2" classname="com.hackerrank.weather.HttpJsonDynamicUnitTest" time="0.019000">
+        <failure>
+            Status code
+        </failure>
+    </testcase>
+    <testcase name="Additional Test 3" classname="com.hackerrank.weather.HttpJsonDynamicUnitTest" time="0.011000">
+        <failure>
+            Status code
+        </failure>
+    </testcase>
+    <testcase name="Additional Test 4" classname="com.hackerrank.weather.HttpJsonDynamicUnitTest" time="0.019000">
+        <failure>
+            Status code
+        </failure>
+    </testcase>
+    <testcase name="Additional Test 5" classname="com.hackerrank.weather.HttpJsonDynamicUnitTest" time="0.075000">
+        <failure>
+            Status code
+        </failure>
+    </testcase>
+</testsuite>

@@ -1,0 +1,10 @@
+com/hackerrank/weather/service/WeatherService.class
+com/hackerrank/weather/controller/WeatherApiRestController.class
+com/hackerrank/weather/repository/WeatherRepository.class
+com/hackerrank/weather/repository/LocationRepository.class
+com/hackerrank/weather/service/LocationServiceImpl.class
+com/hackerrank/weather/service/WeatherServiceImpl.class
+com/hackerrank/weather/service/LocationService.class
+com/hackerrank/weather/model/Weather.class
+com/hackerrank/weather/Application.class
+com/hackerrank/weather/model/Location.class
